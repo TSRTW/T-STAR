@@ -72,11 +72,11 @@ namespace pocketmine {
 	use pocketmine\utils\Utils;
 	use pocketmine\wizard\Installer;
 
-	const VERSION = "1.0";
+	const VERSION = "1.1.0";
 	const API_VERSION = "2.0.0";
-	const CODENAME = "TSR-203";
-	const MINECRAFT_VERSION = "v1.0.0 alpha";
-	const MINECRAFT_VERSION_NETWORK = "1.0.0";
+	const CODENAME = "TSR-214";
+	const MINECRAFT_VERSION = "v1.0.3 alpha";
+	const MINECRAFT_VERSION_NETWORK = "1.0.3";
 	const GENISYS_API_VERSION = '1.9.3';
 
 	/*
