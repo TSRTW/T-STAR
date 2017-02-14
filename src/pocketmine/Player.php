@@ -43,6 +43,7 @@ use pocketmine\entity\ThrownExpBottle;
 use pocketmine\entity\ThrownPotion;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\ItemFrameDropItemEvent;
+use pocketmine\event\block\SignChangeEvent;
 use pocketmine\event\entity\EntityCombustByEntityEvent;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -152,6 +153,7 @@ use pocketmine\permission\PermissionAttachment;
 use pocketmine\plugin\Plugin;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
 use pocketmine\utils\Binary;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
@@ -223,6 +225,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	protected $username;
 	protected $iusername;
 	protected $displayName;
+	protected $deviceModel;
 	protected $startAction = -1;
 	/** @var Vector3 */
 	protected $sleeping = null;
@@ -443,6 +446,10 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	public function getClientId(){
 		return $this->randomClientId;
 	}
+	
+	public function getDeviceModel(){
+		return $this->deviceModel;
+	}
 
 	public function getClientSecret(){
 		return $this->clientSecret;
@@ -458,9 +465,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->kick(TextFormat::RED . "You have been banned");
 		}else{
 			$this->server->getNameBans()->remove($this->getName());
-		}
-		if(($player = $sender->getServer()->getPlayerExact($name)) instanceof Player){
-			$player->kick($reason !== "" ? "Banned by admin. Reason: " . $reason : "Banned by admin." . "Banned Until:" . date('r'), $until = "Forever");
 		}
 	}
 
@@ -704,20 +708,18 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	public function sendCommandData(){
-		$pk = new AvailableCommandsPacket();
 		$data = new \stdClass();
 		$count = 0;
 		foreach($this->server->getCommandMap()->getCommands() as $command){
-			//TODO: fix command permission checks on join
-			/*if(!$command->testPermissionSilent($this)){
-				continue;
-			}*/
-			++$count;
-			$data->{$command->getName()}->versions[0] = $command->generateCustomCommandData($this);
+			if(($cmdData = $command->generateCustomCommandData($this)) !== null){
+				++$count;
+				$data->{$command->getName()}->versions[0] = $cmdData;
+			}
 		}
 
 		if($count > 0){
 			//TODO: structure checking
+			$pk = new AvailableCommandsPacket();
 			$pk->commands = json_encode($data);
 			$this->dataPacket($pk);
 		}
@@ -727,7 +729,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 * @param SourceInterface $interface
 	 * @param null            $clientID
 	 * @param string          $ip
-	 * @param integer         $port
+	 * @param int             $port
 	 */
 	public function __construct(SourceInterface $interface, $clientID, $ip, $port){
 		$this->interface = $interface;
@@ -1717,7 +1719,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$this->checkNearEntities($tickDiff);
 			}
 
-			$this->speed = $from->subtract($to);
+			$this->speed = ($to->subtract($from))->divide($tickDiff);
 		}elseif($distanceSquared == 0){
 			$this->speed = new Vector3(0, 0, 0);
 			$this->setMoving(false);
@@ -1880,11 +1882,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					}
 				}
 			}
-			if(!$this->isSleeping()){
-				$this->processMovement($tickDiff);
-			}
 
-			if(!$this->isSpectator()) $this->entityBaseTick($tickDiff);
+			$this->processMovement($tickDiff);
+			$this->entityBaseTick($tickDiff);
 
 			if($this->isOnFire() or $this->lastUpdate % 10 == 0){
 				if($this->isCreative() and !$this->isInsideOfFire()){
@@ -2147,7 +2147,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->level->getName(),
 			round($this->x, 4),
 			round($this->y, 4),
-			round($this->z, 4)
+			round($this->z, 4),
+			TextFormat::YELLOW . $this->deviceModel . TextFormat::WHITE,
 		]));
 		/*if($this->isOp()){
 			$this->setRemoveFormat(false);
@@ -2249,6 +2250,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$this->setNameTag($this->username);
 				$this->iusername = strtolower($this->username);
 				$this->protocol = $packet->protocol;
+				$this->deviceModel = $packet->deviceModel;
 
 				if($this->server->getConfigBoolean("online-mode", false) && $packet->identityPublicKey === null){
 					$this->kick("disconnectionScreen.notAuthenticated", false);
@@ -3569,8 +3571,29 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					if(!$t->updateCompoundTag($nbt, $this)){
 						$t->spawnTo($this);
 					}
-				}
-				break;
+				} else if ($t instanceof Sign){
+                    $nbt = new NBT(NBT::LITTLE_ENDIAN);
+                    $nbt->read($packet->namedtag);
+                    $nbt = $nbt->getData();
+                    if($nbt["id"] !== Tile::SIGN){
+                        $t->spawnTo($this);
+                    }else{
+                        $ev = new SignChangeEvent($t->getBlock(), $this, [
+                            TextFormat::clean($nbt["Text1"], $this->removeFormat), TextFormat::clean($nbt["Text2"], $this->removeFormat), TextFormat::clean($nbt["Text3"], $this->removeFormat), TextFormat::clean($nbt["Text4"], $this->removeFormat)
+                        ]);
+                        if(!isset($t->namedtag->Creator) or $t->namedtag["Creator"] !== $this->getRawUniqueId()){
+                            $ev->setCancelled();
+                        }
+                        $this->server->getPluginManager()->callEvent($ev);
+                        if(!$ev->isCancelled()){
+                            $t->setText($ev->getLine(0), $ev->getLine(1), $ev->getLine(2), $ev->getLine(3));
+                        }else{
+                            $t->spawnTo($this);
+                        }
+                    }
+                }
+
+                break;
 			case ProtocolInfo::SET_PLAYER_GAME_TYPE_PACKET:
 				if($packet->gamemode !== ($this->gamemode & 0x01)){
 					//GUI gamemode change, set it back to original for now (only possible through client bug or hack with current allowed client permissions)
