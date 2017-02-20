@@ -21,10 +21,11 @@
 
 namespace pocketmine\level\particle;
 
+use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
-class BlockForceFieldParticle extends GenericParticle{
-	public function __construct(Vector3 $pos, int $data = 0){
-		parent::__construct($pos, Particle::TYPE_BLOCK_FORCE_FIELD, $data); //TODO: proper encode/decode of data
+class TerrainParticle extends GenericParticle{
+	public function __construct(Vector3 $pos, Block $b){
+		parent::__construct($pos, Particle::TYPE_TERRAIN, ($b->getDamage() << 8) | $b->getId());
 	}
 }
