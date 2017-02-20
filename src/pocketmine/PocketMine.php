@@ -74,7 +74,7 @@ namespace pocketmine {
 
 	const VERSION = "1.1.0";
 	const API_VERSION = "2.0.0";
-	const CODENAME = "TSR-214";
+	const CODENAME = "TSR-220";
 	const MINECRAFT_VERSION = "v1.0.3 alpha";
 	const MINECRAFT_VERSION_NETWORK = "1.0.3";
 	const GENISYS_API_VERSION = '1.9.3';
