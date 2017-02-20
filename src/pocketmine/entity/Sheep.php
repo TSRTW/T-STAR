@@ -38,7 +38,7 @@ class Sheep extends Animal implements Colorable{
 	public $length = 1.4375;
 	public $height = 1.8;
 	
-	public function getName(){
+	public function getName() : string{
 		return "Sheep";
 	}
 

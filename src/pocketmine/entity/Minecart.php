@@ -23,11 +23,8 @@ namespace pocketmine\entity;
 
 use pocketmine\block\Block;
 use pocketmine\block\Rail;
-use pocketmine\item\Item as ItemItem;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 
@@ -67,7 +64,7 @@ class Minecart extends Vehicle{
 		parent::initEntity();
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Minecart";
 	}
 
@@ -409,7 +406,6 @@ class Minecart extends Vehicle{
 			$this->moveUsingVector($newVector);
 			return true;
 		}
-		return false;
 	}
 
 	/**

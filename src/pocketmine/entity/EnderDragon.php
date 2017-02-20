@@ -2,48 +2,51 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
+ *    _______                                _
+ *   |__   __|                              | |
+ *      | | ___  ___ ___  ___ _ __ __ _  ___| |_
+ *      | |/ _ \/ __/ __|/ _ \  __/ _` |/ __| __|
+ *      | |  __/\__ \__ \  __/ | | (_| | (__| |_
+ *      |_|\___||___/___/\___|_|  \__,_|\___|\__|
+ *
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ * @author Tessetact Team
+ * @link http://www.github.com/TesseractTeam/Tesseract
  * 
  *
-*/
+ */
 
 namespace pocketmine\entity;
 
-use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\network\protocol\AddEntityPacket;
 
-class Ghast extends FlyingAnimal{
-	const NETWORK_ID = 41;
+class EnderDragon extends Monster {
 
-	public $width = 6;
-	public $length = 6;
-	public $height = 6;
-	
-	public function getName() : string{
-		return "Ghast";
-	}
+	const NETWORK_ID = 53;
+
+	//----- This cord from Dragon.php -----//
+	public $dropExp = [500, 12,000];//TODO: Add death animation and exp drop.
 
 	public function initEntity(){
-		$this->setMaxHealth(10);
+		$this->setMaxHealth(200);
 		parent::initEntity();
 	}
-	
+	//-------------------------------------//
+
+	public function getName() : string{
+		return "Ender Dragon";
+	}
+
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();
-		$pk->type = Ghast::NETWORK_ID;
+		$pk->type = self::NETWORK_ID;
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;
@@ -57,4 +60,5 @@ class Ghast extends FlyingAnimal{
 
 		parent::spawnTo($player);
 	}
+
 }

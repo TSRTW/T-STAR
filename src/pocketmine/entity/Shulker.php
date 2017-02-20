@@ -35,7 +35,7 @@ class Shulker extends Monster{
 
 	public $dropExp = [1, 4];
 	
-	public function getName(){
+	public function getName() : string{
 		return "Shulker";
 	}
 	

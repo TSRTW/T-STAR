@@ -113,7 +113,7 @@ class FishingHook extends Projectile{
 			$pk = new EntityEventPacket();
 			$pk->eid = $this->shootingEntity->getId();//$this or $this->shootingEntity
 			$pk->event = EntityEventPacket::FISH_HOOK_HOOK;
-			Server::getInstance()->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
+			$this->server->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
 		}
 	}
 
@@ -122,7 +122,7 @@ class FishingHook extends Projectile{
 			$pk = new EntityEventPacket();
 			$pk->eid = $this->shootingEntity->getId();//$this or $this->shootingEntity
 			$pk->event = EntityEventPacket::FISH_HOOK_BUBBLE;
-            Server::getInstance()->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
+			$this->server->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
 		}
 	}
 
@@ -136,7 +136,7 @@ class FishingHook extends Projectile{
 			$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new PlayerFishEvent($this->shootingEntity, $item, $this));
 			if(!$ev->isCancelled()){
 				$this->shootingEntity->getInventory()->addItem($item);
-				$this->shootingEntity->addExperience(mt_rand(1, 6));
+				$this->shootingEntity->addXp(mt_rand(1, 6));
 				$this->damageRod = true;
 			}
 		}

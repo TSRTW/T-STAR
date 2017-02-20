@@ -37,7 +37,7 @@ class Slime extends Living{
 
 	public $dropExp = [1, 4];
 	
-	public function getName(){
+	public function getName() : string{
 		return "Slime";
 	}
 	

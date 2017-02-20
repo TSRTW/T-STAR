@@ -22,7 +22,6 @@
 namespace pocketmine\entity;
 
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\level\format\Chunk;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
@@ -44,7 +43,7 @@ class Villager extends Creature implements NPC, Ageable{
 	public $length = 0.6;
 	public $height = 1.8;
 
-	public function getName(){
+	public function getName() : string{
 		return "Villager";
 	}
 

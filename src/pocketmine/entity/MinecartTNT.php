@@ -27,7 +27,7 @@ use pocketmine\Player;
 class MinecartTNT extends Minecart{
 	const NETWORK_ID = 97;
 
-	public function getName(){
+	public function getName() : string{
 		return "Minecart TNT";
 	}
 

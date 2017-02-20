@@ -33,7 +33,6 @@ class Painting extends Hanging{
 		if($source->isCancelled()) return false;
 		$this->level->addParticle(new DestroyBlockParticle($this->add(0.5), Block::get(Block::LADDER)));
 		$this->kill();
-		return true;
 	}
 
 	public function spawnTo(Player $player){
