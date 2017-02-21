@@ -2,7 +2,7 @@
 
 #Phiên bản file cài đặt
 config:
- version: 22
+ version: 23
 
 level:
  #Chỉnh nếu muốn bật/tắt thời tiết (true/false)
@@ -16,6 +16,9 @@ level:
  lightning-fire: false
  #Bật/tắt nếu muốn lửa lan (true/false)
  fire-spread: false
+ 
+ network:
+ raklib-disable: false
  
 player:
  #Bật/tắt nếu muốn thêm chế độ đói (true/false)

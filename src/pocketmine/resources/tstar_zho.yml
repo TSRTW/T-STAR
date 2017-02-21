@@ -2,7 +2,7 @@
 
 #設定檔案版本
 config:
- version: 22
+ version: 23
 
 level:
  #設定是否變換天氣
@@ -16,6 +16,9 @@ level:
  lightning-fire: false
  #設定是否火焰蔓延
  fire-spread: false
+ 
+ network:
+  raklib-disable: false
  
 player:
  #是否打開飢餓

@@ -2,7 +2,7 @@
 
 #Version of this file
 config:
- version: 22
+ version: 23
 
 level:
  #Set if weather is enabled (rain may cause lag to older devices)
@@ -17,6 +17,9 @@ level:
  #Set if fire should spread (trees, etc.)
  fire-spread: false
 
+ network:
+ raklib-disable: false
+ 
 player:
  #Set if hunger is enabled
  hunger: true
