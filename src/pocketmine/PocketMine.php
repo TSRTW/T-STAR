@@ -75,9 +75,6 @@ namespace pocketmine {
 	const VERSION = "1.1.0";
 	const API_VERSION = "2.0.0";
 	const CODENAME = "TSR-220";
-	const MINECRAFT_VERSION = "v1.0.3 alpha";
-	const MINECRAFT_VERSION_NETWORK = "1.0.3";
-	const GENISYS_API_VERSION = '1.9.3';
 
 	/*
 	 * Startup code. Do not look at it, it may harm you.
@@ -488,7 +485,7 @@ namespace pocketmine {
 	$logger->shutdown();
 	$logger->join();
 
-	echo "Server has stopped" . Terminal::$FORMAT_RESET . "\n";
+	echo "伺服器已經停止" . Terminal::$FORMAT_RESET . "\n";
 
 	exit(0);
 

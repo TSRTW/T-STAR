@@ -1773,7 +1773,7 @@ class Server{
 			if($this->getAdvancedProperty("network.raklib-disable") === false){
 			$this->network->registerInterface(new RakLibInterface($this));
 			} else {
-				$this->logger->notice("Raklib disabled by tesseract.yml!");
+				$this->logger->notice("Raklib disabled by tstar.yml!");
 			}
 
 			LevelProviderManager::addProvider(Anvil::class);
@@ -1846,7 +1846,7 @@ class Server{
 			$this->enablePlugins(PluginLoadOrder::POSTWORLD);
 
 			if($cfgVer > $advVer){
-				$this->logger->notice("Your tesseract.yml needs update (Current : $advVer -> Latest: $cfgVer)");
+				$this->logger->notice("Your tstar.yml needs update (Current : $advVer -> Latest: $cfgVer)");
 			}
 
 			$this->start();
